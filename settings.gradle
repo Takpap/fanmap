@@ -1,0 +1,2 @@
+rootProject.name='饭图'
+include ':app'

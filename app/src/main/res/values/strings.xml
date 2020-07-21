@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">饭图</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">电话号码</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in">登　陆</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">欢迎登陆</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+</resources>
