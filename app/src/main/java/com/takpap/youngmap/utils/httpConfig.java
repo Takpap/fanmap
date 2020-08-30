@@ -8,7 +8,6 @@ public class httpConfig {
     //开发环境
 
     /**
-     *
      * 开发环境地址
      */
 //    public static final String DEBUG_BASE_URL ="http://192.168.3.218/";
