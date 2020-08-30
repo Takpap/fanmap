@@ -1,14 +1,17 @@
 package com.takpap.youngmap.Fragment;
 
 public interface DialogFragmentDataCallback {
+    String getOrderId();
     String getPassengerName();
     String getPassengerCount();
     String getPassengerTel();
     String getPassengerStart();
-    String getPassengerStartLat();
-    String getPassengerStartLon();
+    Double getPassengerStartLat();
+    Double getPassengerStartLon();
     String getPassengerDest();
-    String getPassengerDestLat();
-    String getPassengerDestLon();
+    Double getPassengerDestLat();
+    Double getPassengerDestLon();
+    Double getDriverLat();
+    Double getDriverLon();
 
 }

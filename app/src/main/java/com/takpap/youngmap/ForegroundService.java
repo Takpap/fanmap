@@ -53,7 +53,7 @@ public class ForegroundService extends Service {
         builder.setContentTitle("黔行 (司机端)");
         builder.setContentText("正在后台运行...");
         Notification notification = builder.build();
-//        notification.defaults = Notification.DEFAULT_SOUND;
+        notification.defaults = Notification.DEFAULT_SOUND;
         notification.sound = null;
         startForeground(1, notification);
         acquireWakeLock();
@@ -65,19 +65,17 @@ public class ForegroundService extends Service {
     public void onDestroy() {
         Log.d(TAG, "ServiceonDestroy");
         super.onDestroy();
-        mMediaPlayer.pause();
-        if(manufacturer.equals("OPPO")){
-            stopPlaySong();
-        }
-
-
+//        mMediaPlayer.pause();
+//        if(manufacturer.equals("OPPO")){
+//            stopPlaySong();
+//        }
         // 如果Service被杀死，干掉通知
 //        NotificationManager mManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 //        mManager.cancel(1);
 //        // 重启自己
 //        Intent intent = new Intent(getApplicationContext(),ForegroundService.class);
 //        startService(intent);
-//        releaseWakeLock();
+        releaseWakeLock();
     }
     @Override
     public IBinder onBind(Intent intent) {

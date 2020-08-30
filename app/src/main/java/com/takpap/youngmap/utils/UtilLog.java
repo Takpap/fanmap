@@ -8,7 +8,7 @@ public class UtilLog {
 
     /**
      *
-     * @param TAG       類名
+     * @param TAG       类名
      * @param content   log的内容
      */
     public static void d(String TAG, String content) {
@@ -38,6 +38,12 @@ public class UtilLog {
     public static void i(String TAG, String content) {
         if (sIsShow) {
             Log.i(sLogName + TAG, content);
+        }
+    }
+
+    public static void d(String content) {
+        if (sIsShow) {
+            Log.d("commonlyLog", content);
         }
     }
 

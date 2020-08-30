@@ -43,6 +43,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="n">
+        <activity
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            android:name=".Activity.RegisterActivity"/>
+        <activity
+            android:name=".Activity.GuideActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="99dMwmhk4CXvkKuuihjskrOXFnCFmBmI" /> <!-- value的值填写渠道名称，例如yingyongbao。这里设置动态渠道变量 -->
@@ -56,6 +63,7 @@
             android:theme="@style/Theme_Umeng_Push_Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -67,7 +75,9 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.MaterialComponents.Light.Bridge" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            />
+<!--            android:theme="@style/Theme.MaterialComponents.Light.Bridge" />-->
         <activity
             android:name=".MyMKOfflineMap"
             android:enabled="true"

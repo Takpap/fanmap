@@ -2,6 +2,7 @@ package com.takpap.youngmap;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,9 +19,18 @@ import com.umeng.message.inapp.InAppMessageManager;
 
 public class MyApplication extends Application {
     private String deviceUUID;
+    private String tel;
 
     public String getDeviceUUID() {
         return deviceUUID;
+    }
+    public String getTel(){
+        SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
+        String tel = sharedPreferences.getString("tel","");
+        if(!tel.isEmpty()){
+            return tel;
+        }
+        return "";
     }
 
     @Override

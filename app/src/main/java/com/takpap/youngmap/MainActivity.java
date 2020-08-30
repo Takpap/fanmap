@@ -15,7 +15,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -29,9 +28,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
@@ -47,12 +44,15 @@ import com.takpap.youngmap.Fragment.DialogFragmentDataCallback;
 import com.takpap.youngmap.Fragment.PassengerDialogFragment;
 import com.takpap.youngmap.utils.UtilLog;
 import com.umeng.message.PushAgent;
+import com.umeng.message.UmengNotificationClickHandler;
+import com.umeng.message.entity.UMessage;
 import com.umeng.message.inapp.IUmengInAppMsgCloseCallback;
 import com.umeng.message.inapp.InAppMessageManager;
+//导航类
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 import okhttp3.internal.Util;
 
@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
     private Vibrator vb;
     private InAppMessageManager inAppMessageManager;
     private Bundle passengerBundle;
+    private PassengerDialogFragment passengerDialogFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
         getPersimmions();
         initOrientation();
         PushAgent.getInstance(this).setPushCheck(true);
+        passengerDialogFragment = new PassengerDialogFragment();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -132,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
         //展示插屏消息
         if (savedInstanceState == null) {
             showCardMessage();
-
         }
+
 
     }
 
@@ -190,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
                     MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(lll, 19);
                     baiduMap.animateMapStatus(u);
                 }
-                myOkhttp = new MyOkhttp(accuracy, longitude, langitude, (double) mCurrentx, myApplication.getDeviceUUID());
+                myOkhttp = new MyOkhttp(accuracy, longitude, langitude, (double) mCurrentx, myApplication.getTel());
                 myOkhttp.SendAndRespon();
 //                final Handler handler = new Handler();
 //                handler.postDelayed(new Runnable() {
@@ -219,16 +222,12 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
         mMapView.onResume();
         checkGpsEnabled();
         passengerBundle = getIntent().getExtras();
-        if (passengerBundle != null) {
-//            Set<String> keySet = bun.keySet();
-//            for (String key : keySet) {
-//                String value = bun.getString(key);
-//                UtilLog.v(getLocalClassName(), value);
-//            }
-            PassengerDialogFragment passengerDialogFragment = new PassengerDialogFragment();
+        if (passengerBundle != null && !passengerDialogFragment.isAdded()) {
             passengerDialogFragment.show(getSupportFragmentManager(), "这是啥玩意儿");
         }
     }
+
+
 
 
     @Override
@@ -456,6 +455,11 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
         builder.show();
     }
 
+    @Override
+    public String getOrderId() {
+        return passengerBundle.getString("orderId");
+    }
+
     /**
      * 实现 DialogFragmentDataCallback 接口
      **/
@@ -480,13 +484,13 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
     }
 
     @Override
-    public String getPassengerStartLat() {
-        return passengerBundle.getString("startLat");
+    public Double getPassengerStartLat() {
+        return Double.valueOf(Objects.requireNonNull(passengerBundle.getString("startLat")));
     }
 
     @Override
-    public String getPassengerStartLon() {
-        return passengerBundle.getString("startLon");
+    public Double getPassengerStartLon() {
+        return Double.valueOf(Objects.requireNonNull(passengerBundle.getString("startLon")));
     }
 
     @Override
@@ -495,13 +499,22 @@ public class MainActivity extends AppCompatActivity implements DialogFragmentDat
     }
 
     @Override
-    public String getPassengerDestLat() {
-        return passengerBundle.getString("destLat");
+    public Double getPassengerDestLat() {
+        return Double.valueOf(Objects.requireNonNull(passengerBundle.getString("destLat")));
     }
 
     @Override
-    public String getPassengerDestLon() {
-        return passengerBundle.getString("destLon");
+    public Double getPassengerDestLon() {
+        return Double.valueOf(Objects.requireNonNull(passengerBundle.getString("destLon")));
     }
 
+    @Override
+    public Double getDriverLat() {
+        return langitude;
+    }
+
+    @Override
+    public Double getDriverLon() {
+        return longitude;
+    }
 }

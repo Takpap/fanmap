@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.takpap.youngmap.Activity.RegisterActivity;
 import com.takpap.youngmap.utils.httpConfig;
 
 import org.json.JSONException;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.OkHttpClient;
@@ -39,15 +42,20 @@ public class ActivityLogin extends AppCompatActivity {
     private Boolean User = false;
     private String TAG = "logActivityLogin";
     private Handler handler;
+    private Map<String, String> minorMap;
+    private MyApplication myApplication;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        myApplication = (MyApplication) getApplication();
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         progress_circular = findViewById(R.id.progress_circular);
         Button loginButton = findViewById(R.id.login);
+        Button registerButton = findViewById(R.id.register);
         if(isFirstLogin()){
             startActivity(new Intent(ActivityLogin.this, MainActivity.class));
             finish();
@@ -71,7 +79,10 @@ public class ActivityLogin extends AppCompatActivity {
                             progress_circular.setVisibility(View.INVISIBLE);
                             SharedPreferences.Editor editor = getSharedPreferences("userData",
                                     MODE_PRIVATE).edit();
-                            editor.putString("userId", md5(password.getText().toString().trim()));
+                            editor.putString("name", minorMap.get("name"));
+                            editor.putString("lpn", minorMap.get("lpn"));
+                            editor.putString("tel", username.getText().toString().trim());
+                            editor.putString("pwd", password.getText().toString().trim());
                             editor.apply();
                             startActivity(new Intent(ActivityLogin.this, MainActivity.class));
                             finish();
@@ -84,12 +95,19 @@ public class ActivityLogin extends AppCompatActivity {
                 };
             }
         });
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ActivityLogin.this, RegisterActivity.class));
+            }
+        });
     }
 
     private Boolean isFirstLogin() {
         SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
-        String userId = sharedPreferences.getString("userId","");
-        if(userId.isEmpty()){
+        String tel = sharedPreferences.getString("tel","");
+        String pwd = sharedPreferences.getString("pwd","");
+        if(tel.isEmpty()||pwd.isEmpty()){
             Toast.makeText(ActivityLogin.this,"第一次使用请先登录",Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -101,9 +119,10 @@ public class ActivityLogin extends AppCompatActivity {
             @Override
             public void run() {
                 OkHttpClient okHttpClient = new OkHttpClient();
-                String userId = md5(password.getText().toString().trim());
+                String tel = username.getText().toString().trim();
+                String pwd = password.getText().toString().trim();
                 Request request = new Request.Builder()
-                        .url(httpConfig.getServerUrl() + "login?userId=" + userId)
+                        .url(httpConfig.getServerUrl() + "login?tel=" + tel+"&pwd="+pwd+"&pushId="+myApplication.getDeviceUUID())
                         .build();
                 Response response = null;
                 try {
@@ -119,8 +138,13 @@ public class ActivityLogin extends AppCompatActivity {
                         User = Boolean.parseBoolean(status);
                         Message message = new Message();
                         if (User) {
+                            String name = new JSONObject(mesResponse).getString("name");
+                            String lpn = new JSONObject(mesResponse).getString("lpn");
+                            minorMap = new HashMap<String, String>();
+                            minorMap.put("name",name);
+                            minorMap.put("lpn",lpn);
                             message.what = 1;
-                            message.obj = true;
+                            message.obj = minorMap;
                         } else {
                             message.what = 2;
                             message.obj = false;

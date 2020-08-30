@@ -26,29 +26,27 @@ public class MyOkhttp {
     private int accuracy;
     private OkHttpClient okHttpClient;
     private String mesResponse;
+    private String tel;
     public String getMesResponse() {
         return mesResponse;
     }
 
-    public MyOkhttp(int accuracy,Double longitude, Double latitude, Double direction,String umenPushUuid) {
+    public MyOkhttp(int accuracy,Double longitude, Double latitude, Double direction,String tel) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.accuracy = accuracy;
         this.direction = direction;
+        this.tel = tel;
     }
 
     public void SendAndRespon() {
         okHttpClient = new OkHttpClient();
-        Log.d("receivelocationSuccess","start send");
         RequestBody formBody = new FormBody.Builder()
+                .add("tel", String.valueOf(tel))
                 .add("longitude", String.valueOf(longitude))
                 .add("latitude", String.valueOf(latitude))
                 .add("accuracy", String.valueOf(accuracy))
                 .add("direction", String.valueOf(direction))
-//                .add("brand", Build.BRAND)
-//                .add("model", Build.MODEL)
-//                .add("release", Build.VERSION.RELEASE)
-//                .add("umenPushUuid", umenPushUuid)
                 .build();
         Request request = new Request.Builder()
                 .url(url)
